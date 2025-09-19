@@ -26,14 +26,13 @@ if torch.cuda.is_available():
     print(f"Current CUDA device: {torch.cuda.current_device()}")
 
 print('Libraries Imported ....')
-# Enable logging for Transformers
+
 logging.set_verbosity_info()
 
-# Ensure environment is set to use GPU
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # Use first GPU
+os.environ["CUDA_VISIBLE_DEVICES"] = "0" 
 
-# Define model ID and load the tokenizer and model
-model_id = "/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/deepseek-llm-7b-chat"
+# Defining model ID and load the tokenizer and model
+model_id = "./deepseek-llm-7b-chat"
 print("Loading tokenizer and model...")
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 tokenizer.pad_token = tokenizer.eos_token
@@ -74,9 +73,9 @@ print("Model prepared with LoRA adapters.")
 
 # Load datasets
 print("Loading datasets...")
-train_path = '/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/train.csv'
-test_path = '/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/test.csv'
-val_path = '/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/dev.csv'
+train_path = './Groping/train.csv'
+test_path = './Groping/test.csv'
+val_path = './Groping/dev.csv'
 train_data = pd.read_csv(train_path)
 val_data = pd.read_csv(val_path)
 test_data = pd.read_csv(test_path)
@@ -99,7 +98,7 @@ for _, row in train_data.iterrows():
     )
     train.append({"prompt": prompt, "label": row["Category"]})
 formatted_train = pd.DataFrame(train)
-formatted_train.to_csv("/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/formatted_training_data_Groping_llm.csv", index=False)
+formatted_train.to_csv("./Groping/formatted_training_data_Groping_llm.csv", index=False)
 
 for _, row in test_data.iterrows():
     user_message = {"role": "user", "content": f"{system_instruction}\n\n{row['Description']}"}
@@ -109,7 +108,7 @@ for _, row in test_data.iterrows():
     )
     test.append({"prompt": prompt, "label": row["Category"]})
 formatted_test = pd.DataFrame(test)
-formatted_test.to_csv("/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/formatted_test_data_Groping_llm.csv", index=False)
+formatted_test.to_csv("./Groping/formatted_test_data_Groping_llm.csv", index=False)
 
 for _, row in val_data.iterrows():
     user_message = {"role": "user", "content": f"{system_instruction}\n\n{row['Description']}"}
@@ -119,14 +118,14 @@ for _, row in val_data.iterrows():
     )
     val.append({"prompt": prompt, "label": row["Category"]})
 formatted_val = pd.DataFrame(val)
-formatted_val.to_csv("/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/formatted_val_data_Groping_llm.csv", index=False)
+formatted_val.to_csv("./Groping/formatted_val_data_Groping_llm.csv", index=False)
 
 train[:5]
 
 # Load formatted data
-train = pd.read_csv('/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/formatted_training_data_Groping_llm.csv')
-test = pd.read_csv('/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/formatted_test_data_Groping_llm.csv')
-val = pd.read_csv('/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Groping/formatted_val_data_Groping_llm.csv')
+train = pd.read_csv('./Groping/formatted_training_data_Groping_llm.csv')
+test = pd.read_csv('./Groping/formatted_test_data_Groping_llm.csv')
+val = pd.read_csv('./Groping/formatted_val_data_Groping_llm.csv')
 
 train.head()
 
@@ -308,42 +307,7 @@ results_df = pd.DataFrame({
 
 
 # Save the results to CSV
-results_csv_path = "/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/deepseek_llm_7b_Groping_predictions.csv"
+results_csv_path = "./deepseek_llm_7b_Groping_predictions.csv"
 results_df.to_csv(results_csv_path, index=False)
 print(f"Predictions saved to {results_csv_path}")
 
-# Save paths
-lora_model_path = "/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Finetuned_Models/Groping/fine-tuned-DeepSeek-LLM-7B_Groping_LoRA"
-merged_model_path = "/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Finetuned_Models/Groping/fine-tuned-DeepSeek-LLM-7B_Groping_Merged"
-
-# Saving the LoRA model
-print("Saving LoRA model...")
-model.save_pretrained(lora_model_path)
-tokenizer.save_pretrained(lora_model_path)
-
-# Create merged model
-print("Creating and saving merged model...")
-try:
-    # Load the base model
-    base_model = AutoModelForSequenceClassification.from_pretrained(
-        model_id,
-        num_labels=2,
-        device_map="auto",
-        torch_dtype=torch.float16  # Using float16 for the merged model to save memory
-    )
-    
-    # Load the trained LoRA model
-    lora_model = PeftModel.from_pretrained(base_model, lora_model_path)
-    
-    # Merge weights
-    merged_model = lora_model.merge_and_unload()
-    
-    # Save the merged model
-    merged_model.save_pretrained(merged_model_path)
-    tokenizer.save_pretrained(merged_model_path)
-    print(f"Merged model saved successfully to {merged_model_path}")
-except Exception as e:
-    print(f"Error when creating merged model: {e}")
-    print("Proceeding without merged model.")
-
-print("Training, evaluation, and model saving completed successfully.")
