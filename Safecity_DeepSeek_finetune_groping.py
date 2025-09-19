@@ -50,7 +50,7 @@ print("Loading model...")
 model = AutoModelForSequenceClassification.from_pretrained(
     model_id,
     num_labels=2,
-    device_map="auto",  # This should automatically use GPU if available
+    device_map="auto",  
     quantization_config=bnb_config,
     use_cache=False
 )
@@ -130,7 +130,7 @@ val = pd.read_csv('/home/kpokhrel/projects/def-kaz/kpokhrel/DeepSeek/Datasets/Gr
 
 train.head()
 
-# Tokenization without padding (first step)
+# Tokenization without padding 
 def tokenize_conversation(examples):
     return tokenizer(examples['prompt'], truncation=False)
 
@@ -145,7 +145,6 @@ def find_max_token_length(dataframe):
     )
     input_ids_list = tokenized_dataset['input_ids']
 
-    # Add progress bar for finding max length
     max_len = 0
     for input_ids in tqdm(input_ids_list, desc="Calculating max token length"):
         max_len = max(max_len, len(input_ids))
@@ -218,10 +217,10 @@ training_args = TrainingArguments(
     save_strategy="epoch",
     report_to="none",
     load_best_model_at_end=True,
-    fp16=True,  # Enable mixed precision training
-    dataloader_num_workers=4,  # Use multiple CPU workers for data loading
-    gradient_accumulation_steps=2,  # Accumulate gradients to effectively increase batch size
-    remove_unused_columns=False,  # Needed for custom datasets
+    fp16=True, 
+    dataloader_num_workers=4,  
+    gradient_accumulation_steps=2,  
+    remove_unused_columns=False,  
 )
 
 # Defining the optimizer
