@@ -85,4 +85,29 @@ Similar to one-shot but includes 3 positive and 3 negative examples manually sel
 ### RAG-enhanced Prompting
 Uses the same structure as few-shot prompting but dynamically retrieves the top-6 most semantically similar examples from the training set using Sentence-BERT embeddings and FAISS indexing.
 
+## Label Quality Validation Study
 
+### Background
+Recognizing that real-world, crowdsourced datasets can contain inconsistencies, we conducted an independent validation study to assess the quality of the original SafeCity labels.
+
+### Methodology
+- **Sample size**: 200 randomly selected reports from the 7,201 training examples
+- **Expert re-labeling**: Each instance was independently re-labeled by domain experts to create a gold-standard reference
+- **Statistical analysis**: Compared original vs. expert labels using one-sided proportion Z-test and McNemar's exact test
+
+### Key Findings
+Our validation revealed notable label quality issues:
+
+| Category | Label Mismatch Rate | Statistical Significance |
+|----------|-------------------|-------------------------|
+| Commenting | 22.0% | Above 18% threshold |
+| Ogling | 21.5% | Above 18% threshold |
+| Groping | 14.0% | Above 11% threshold |
+
+### Critical Discovery
+- **Systematic bias identified**: The "Groping" category showed statistically significant directional bias (p < 0.01)
+- **Under-reporting pattern**: False negatives significantly more frequent than false positives for groping incidents
+- **Research implications**: These findings affect absolute performance interpretation but preserve relative model comparisons
+
+### Impact on Results
+While label quality issues affect all models uniformly (maintaining validity of relative performance comparisons), they constrain interpretation of absolute performance metrics. This discovery represents an important contribution to the harassment detection research community, highlighting the need for improved annotation protocols in sensitive AI applications.
