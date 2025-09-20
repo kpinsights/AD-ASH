@@ -145,14 +145,18 @@ We selected seed words corresponding to class labels and identified the nearest 
 ### Saliency Heat Map
 
 <img width="937" height="681" alt="saliency_map_bw_clean6" src="https://github.com/user-attachments/assets/1c7ae457-aa0a-48cd-9d7a-52c7b2e2a8db" />
+
 *Figure 1: Saliency heat-map for a correctly classified example of "commenting".*
 
-<img width="958" height="682" alt="saliency_map_bw_clean2" src="https://github.com/user-attachments/assets/2ea4ce69-2a09-48f1-b361-320f7001ab16" />
-*Figure 2: Saliency heat-map for a correctly classified example of "non-commenting".*
 
 Saliency heatmaps highlight which words in an input have the greatest impact on the final classification.
 
 In Fig. 1, the word "laughing" has the most significant influence on the classification, followed by "girls" and "noises". These words lead the model to predict the label "commenting", which matches the true label. This corresponds to a scenario where a group of boys makes remarks and strange noises toward girls—behavior that falls under the "commenting" category of sexual harassment.
+
+<img width="958" height="682" alt="saliency_map_bw_clean2" src="https://github.com/user-attachments/assets/2ea4ce69-2a09-48f1-b361-320f7001ab16" />
+
+*Figure 2: Saliency heat-map for a correctly classified example of "non-commenting".*
+
 
 To understand why the model classifies certain incidents as non-commenting, consider Fig. 2. Here, the word "touched", followed by "bus", has the greatest influence, resulting in the model predicting the label "non-commenting", which again aligns with the true label. The model appears to associate "touching" with physical acts such as "groping", which are categorized under a different type of sexual harassment.
 
