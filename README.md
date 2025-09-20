@@ -13,15 +13,12 @@ The research addresses a critical limitation in harassment detection: no single 
 AD-ASH leverages these complementary strengths by assigning each harassment type to its best-performing specialist, achieving 66.0% exact-match ratio and 85.3% Hamming score.
 
 ## Dataset
-
-
 The experiments use the SafeCity dataset containing 9,892 anonymized narratives of sexual harassment reports. Following Karlekar and Bansal (2018), we use their established data partition:
 - Training: 7,201 examples
 - Validation: 990 examples  
 - Testing: 1,701 examples
 
-This split inheritance ensures direct comparability with baseline results and maintains consistency with prior work on this dataset.
-  
+This split inheritance ensures direct comparability with baseline results and maintains consistency with prior work on this dataset. The original dataset and additional information can be found at https://github.com/swkarlekar/safecity.
 ## Implementation Details
 
 The framework evaluates three harassment categories from the SafeCity dataset:
